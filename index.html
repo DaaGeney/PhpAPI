@@ -18,7 +18,12 @@
 			<div class="crud_header">
 				<h1 class="left">Primer Sprint</h1>
 				<button class="right addnew" @click="showingModal = true;">Add New</button>
+
 				<div class="fix"></div>
+			</div>
+			<div>
+				<input type="text"  v-model="id">
+				<button @click="getOneUser()">Busqueda</button>
 			</div>
 
 			<hr>

@@ -10,6 +10,7 @@ var app = new Vue({
 		users: [],
 		newUser: { id: "", nombre: "", apellido: "", correo: "", clave: "", credencial: "", idlista: "", idprograma: "" },
 		clickedUser: {},
+		id:""
 
 
 	},
@@ -34,8 +35,25 @@ var app = new Vue({
 					
 				});
 		},
+		getOneUser:function(){
+			//console.log("Al menos entra" )
+			var formData = app.toFormData(app.id)
+			console.log("Al menos entra +" + formData)
+			axios.post("http://localhost/software/api.php?action=search", formData)
+				.then(function (response) {
+					console.log(response.data)
+					app.id=""
+					if (response.data.error) {
+						app.errorMessage = response.data.message;
+						console.log("error")
+					} else {
+						app.users = response.data.users;
+						console.log("Entro")
+					}
+				});
+		},
 		saveUser: function () {
-
+ 
 			var formData = app.toFormData(app.newUser);
 			axios.post("http://localhost/software/api.php?action=create", formData)
 				.then(function (response) {
@@ -55,6 +73,7 @@ var app = new Vue({
 		updateUser: function () {
 
 			var formData = app.toFormData(app.clickedUser);
+			console.log(formData)
 			axios.post("http://localhost/software/api.php?action=update", formData)
 				.then(function (response) {
 					console.log(response);

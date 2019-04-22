@@ -14,6 +14,16 @@ if (isset($_GET['action'])) {
 	$action = $_GET['action'];
 }
 
+if($action=='search'){
+	$id = $_GET['id'];
+	$result = $conn->query("SELECT * FROM `usuarios` where `id`='$id'");
+	$users = array();
+	while ($row = $result->fetch_assoc()){
+		array_push($users, $row);
+	}
+	$res['users'] = $users;
+}
+
 if ($action == 'read') {
 	$result = $conn->query("SELECT * FROM `usuarios` where `estado`='activo'");
 	$users = array();
@@ -44,6 +54,7 @@ if ($action == 'create') {
 		$res['message'] = "Insert User fail";
 	}
 }
+
 
 
 if ($action == 'update') {

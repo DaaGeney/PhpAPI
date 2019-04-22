@@ -81,13 +81,13 @@ border-right: 1px solid #fff;
 	top: 99px;
 	left:0;
 	right:0;
-	bottom:0;
+	bottom:auto;
 	position: fixed;
 	background: #b5b5b5fc;
 	margin: 0 auto;
 	display: block;
 	padding: 0;
-	height: 300px;
+	height: auto;
 	box-shadow: 0 0 130px 28px #00000073;
 }
 .modalheading{
