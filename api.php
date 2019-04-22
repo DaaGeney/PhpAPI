@@ -15,13 +15,13 @@ if (isset($_GET['action'])) {
 }
 
 if ($action == 'read') {
-	$result = $conn->query("SELECT * FROM 'usuarios'");
+	$result = $conn->query("SELECT * FROM `usuarios`");
 	$users = array();
-
 	while ($row = $result->fetch_assoc()){
 		array_push($users, $row);
 	}
 	$res['users'] = $users;
+	
 }
 
 if ($action == 'create') {

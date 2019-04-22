@@ -14,19 +14,24 @@ var app = new Vue({
 
 	},
 	mounted: function () {
-		//console.log("Hi KK");
 		this.getAllUsers();
 	},
 	methods: {
 		getAllUsers: function () {
+			
 			axios.get("http://localhost/software/api.php?action=read")
 				.then(function (response) {
-					console.log(response);
+					console.log(response.data)
 					if (response.data.error) {
 						app.errorMessage = response.data.message;
+						console.log(app.users)
 					} else {
 						app.users = response.data.users;
+						console.log(app.users)
 					}
+					//
+					
+					
 				});
 		},
 		saveUser: function () {
