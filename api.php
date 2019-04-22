@@ -15,7 +15,7 @@ if (isset($_GET['action'])) {
 }
 
 if ($action == 'read') {
-	$result = $conn->query("SELECT * FROM `usuarios`");
+	$result = $conn->query("SELECT * FROM `usuarios` where `estado`='activo'");
 	$users = array();
 	while ($row = $result->fetch_assoc()){
 		array_push($users, $row);
@@ -36,7 +36,7 @@ if ($action == 'create') {
 	$idprograma = $_POST['idprograma'];
 
 
-	$result = $conn->query("INSERT INTO `usuarios` (`id`, `nombre`, `apellido`,`correo`,`clave`,`credencial`,`idlista`,`idprograma`) VALUES (	'$id','$nombre', '$apellido','$correo','$clave','$credencial','$idlista','$idprograma') ");
+	$result = $conn->query("INSERT INTO `usuarios` (`id`, `nombre`, `apellido`,`correo`,`clave`,`credencial`,`idlista`,`idprograma`,`estado`) VALUES (	'$id','$nombre', '$apellido','$correo','$clave','$credencial','$idlista','$idprograma', 'activo') ");
 	if ($result) {
 		$res['message'] = "User Added successfully";
 	} else{
@@ -48,12 +48,18 @@ if ($action == 'create') {
 
 if ($action == 'update') {
 	$id = $_POST['id'];
-	$username = $_POST['username'];
-	$email = $_POST['email'];
-	$mobile = $_POST['mobile'];
+	$nombre = $_POST['nombre'];
+	$apellido = $_POST['apellido'];
+	$correo = $_POST['correo'];
+	$clave = $_POST['clave'];
+	$credencial = $_POST['credencial'];
+	$idlista = $_POST['idlista'];
+	$idprograma = $_POST['idprograma'];
 
 
-	$result = $conn->query("UPDATE `users` SET `username` = '$username', `email` = '$email', `mobile` = '$mobile'WHERE `id` = '$id'");
+	$result = $conn->query("UPDATE `usuarios` SET `nombre` = '$nombre',`apellido`='$apellido' ,
+	 `correo`='$correo', `credencial` = '$credencial',`idlista` = '$idlista', `idprograma` = '$idprograma', `estado` = 'activo'
+	   WHERE `id` = '$id'");
 	if ($result) {
 		$res['message'] = "User Updated successfully";
 	} else{
@@ -68,12 +74,10 @@ if ($action == 'update') {
 
 if ($action == 'delete') {
 	$id = $_POST['id'];
-	$username = $_POST['username'];
-	$email = $_POST['email'];
-	$mobile = $_POST['mobile'];
 
 
-	$result = $conn->query("DELETE FROM `users` WHERE `id` = '$id'");
+	
+	$result = $conn->query("UPDATE `usuarios` SET `estado` = 'inactivo' WHERE `id` = '$id'");	
 	if ($result) {
 		$res['message'] = "User deleted successfully";
 	} else{

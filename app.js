@@ -55,7 +55,7 @@ var app = new Vue({
 		updateUser: function () {
 
 			var formData = app.toFormData(app.clickedUser);
-			axios.post("http://localhost/vuekk/api.php?action=update", formData)
+			axios.post("http://localhost/software/api.php?action=update", formData)
 				.then(function (response) {
 					console.log(response);
 					app.clickedUser = {};
@@ -70,7 +70,7 @@ var app = new Vue({
 		deleteUser: function () {
 
 			var formData = app.toFormData(app.clickedUser);
-			axios.post("http://localhost/vuekk/api.php?action=delete", formData)
+			axios.post("http://localhost/software/api.php?action=delete", formData)
 				.then(function (response) {
 					console.log(response);
 					app.clickedUser = {};

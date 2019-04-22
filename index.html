@@ -3,7 +3,7 @@
 
 <head>
 	<meta charset="UTF-8">
-	<title>VueJS CRUD project By KK</title>
+	<title>Software</title>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css">
 	<link rel="stylesheet" href="style.css">
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.17.1/axios.min.js"></script>
@@ -16,7 +16,7 @@
 
 		<div class="">
 			<div class="crud_header">
-				<h1 class="left">VueJS CRUD WITH PHP AND MySQL</h1>
+				<h1 class="left">Primer Sprint</h1>
 				<button class="right addnew" @click="showingModal = true;">Add New</button>
 				<div class="fix"></div>
 			</div>
@@ -72,7 +72,7 @@
 								<th>:</th>
 								<td><input type="text" placeholder="Nombre" v-model="newUser.nombre"></td>
 							</tr>
-							
+
 							<tr>
 								<th>Apellido</th>
 								<th>:</th>
@@ -119,9 +119,9 @@
 					<div class="modalcontent">
 						<table class="form">
 							<tr>
-								<th>ID</th>
+								<th>Nombre</th>
 								<th>:</th>
-								<td><input type="text" placeholder="id" v-model="clickedUser.id"></td>
+								<td><input type="text" placeholder="nombre" v-model="clickedUser.nombre"></td>
 							</tr>
 							<tr>
 								<th>Apellido</th>
@@ -169,7 +169,7 @@
 					<div class="modalcontent">
 
 						<div class="margin"></div>
-						<h3 class="center">Are you sure to Delete?</h3>
+						<h3 class="center">¿Desea cambiar a inactivo?</h3>
 						<div class="margin"></div>
 						<h4 class="center">{{clickedUser.username}}</h4>
 						<div class="margin"></div>
