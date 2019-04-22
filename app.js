@@ -41,9 +41,12 @@ var app = new Vue({
 				.then(function (response) {
 					console.log(response);
 					app.newUser = { id: "", nombre: "", apellido: "", correo: "", clave: "", credencial: "", idlista: "", idprograma: "" };
+					console.log(app.newUser)
 					if (response.data.error) {
 						app.errorMessage = response.data.message;
+						//console.log(response.data.message)
 					} else {
+						console.log("entro melo")
 						app.successMessage = response.data.message;
 						app.getAllUsers();
 					}

@@ -36,7 +36,7 @@ if ($action == 'create') {
 	$idprograma = $_POST['idprograma'];
 
 
-	$result = $conn->query("INSERT INTO 'usuarios' ('id', 'nombre', 'apellido','correo','clave','credencial','idlista','idprograma') VALUES (	'$id','$nombre', '$apellido','$correo','$clave','$credencial','$idlista','$idprograma') ");
+	$result = $conn->query("INSERT INTO `usuarios` (`id`, `nombre`, `apellido`,`correo`,`clave`,`credencial`,`idlista`,`idprograma`) VALUES (	'$id','$nombre', '$apellido','$correo','$clave','$credencial','$idlista','$idprograma') ");
 	if ($result) {
 		$res['message'] = "User Added successfully";
 	} else{

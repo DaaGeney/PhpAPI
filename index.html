@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 	<meta charset="UTF-8">
 	<title>VueJS CRUD project By KK</title>
@@ -7,6 +8,7 @@
 	<link rel="stylesheet" href="style.css">
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.17.1/axios.min.js"></script>
 </head>
+
 <body>
 
 
@@ -18,7 +20,7 @@
 				<button class="right addnew" @click="showingModal = true;">Add New</button>
 				<div class="fix"></div>
 			</div>
-			
+
 			<hr>
 			<p class="errorMessage" v-if="errorMessage">{{errorMessage}}</p>
 			<p class="successMessage" v-if="successMessage">{{successMessage}}</p>
@@ -47,7 +49,7 @@
 					<td>{{user.idprograma}}</td>
 
 					<td><button @click="showingeditModal = true; selectUser(user)">Edit</button></td>
-					<td><button @click="showingdeleteModal = true; selectUser(user)" >Delete</button></td>
+					<td><button @click="showingdeleteModal = true; selectUser(user)">Delete</button></td>
 				</tr>
 			</table>
 			<div class="fix"></div>
@@ -61,27 +63,53 @@
 					<div class="modalcontent">
 						<table class="form">
 							<tr>
-								<th>Usename</th>
+								<th>ID</th>
 								<th>:</th>
-								<td><input type="text" placeholder="Usename" v-model="newUser.username"></td>
+								<td><input type="text" placeholder="id" v-model="newUser.id"></td>
 							</tr>
 							<tr>
-								<th>Email Adress</th>
+								<th>Nombre</th>
 								<th>:</th>
-								<td><input type="email" placeholder="Email" v-model="newUser.email"></td>
+								<td><input type="text" placeholder="Nombre" v-model="newUser.nombre"></td>
+							</tr>
+							
+							<tr>
+								<th>Apellido</th>
+								<th>:</th>
+								<td><input type="text" placeholder="apellido" v-model="newUser.apellido"></td>
 							</tr>
 							<tr>
-								<th>Phone Number</th>
+								<th>Correo</th>
 								<th>:</th>
-								<td><input type="text" placeholder="Phone" v-model="newUser.mobile"></td>
+								<td><input type="email" placeholder="correo" v-model="newUser.correo"></td>
+							</tr>
+							<tr>
+								<th>Clave</th>
+								<th>:</th>
+								<td><input type="text" placeholder="clave" v-model="newUser.clave"></td>
+							</tr>
+							<tr>
+								<th>Credencial</th>
+								<th>:</th>
+								<td><input type="text" placeholder="credencial" v-model="newUser.credencial"></td>
+							</tr>
+							<tr>
+								<th>Id Lista</th>
+								<th>:</th>
+								<td><input type="text" placeholder="idlista" v-model="newUser.idlista"></td>
+							</tr>
+							<tr>
+								<th>Id Programa</th>
+								<th>:</th>
+								<td><input type="text" placeholder="idprograma" v-model="newUser.idprograma"></td>
 							</tr>
 						</table>
 						<div class="margin"></div>
-						<button class="center"  @click="showingModal = false; saveUser();" >Add User</button>
+						<button class="center" @click="showingModal = false; saveUser();">Add User</button>
 					</div>
 				</div>
 			</div>
-		<div class="modal col-md-6" id="editmodal" v-if="showingeditModal">
+			<div class="modal col-md-6" id="editmodal" v-if="showingeditModal">
 				<div class="modalheading">
 					<p class="left">Edit user</p>
 					<p class="right close" @click="showingeditModal = false;">x</p>
@@ -91,23 +119,43 @@
 					<div class="modalcontent">
 						<table class="form">
 							<tr>
-								<th>Usename</th>
+								<th>ID</th>
 								<th>:</th>
-								<td><input type="text" placeholder="Username" v-model="clickedUser.username"></td>
+								<td><input type="text" placeholder="id" v-model="clickedUser.id"></td>
 							</tr>
 							<tr>
-								<th>Email Adress</th>
+								<th>Apellido</th>
 								<th>:</th>
-								<td><input type="email" placeholder="Email Adress" v-model="clickedUser.email"></td>
+								<td><input type="text" placeholder="apellido" v-model="clickedUser.apellido"></td>
 							</tr>
 							<tr>
-								<th>Phone Number</th>
+								<th>Correo</th>
 								<th>:</th>
-								<td><input type="text" placeholder="Phone Number"  v-model="clickedUser.mobile"></td>
+								<td><input type="email" placeholder="correo" v-model="clickedUser.correo"></td>
+							</tr>
+							<tr>
+								<th>Clave</th>
+								<th>:</th>
+								<td><input type="text" placeholder="clave" v-model="clickedUser.clave"></td>
+							</tr>
+							<tr>
+								<th>Credencial</th>
+								<th>:</th>
+								<td><input type="text" placeholder="credencial" v-model="clickedUser.credencial"></td>
+							</tr>
+							<tr>
+								<th>Id Lista</th>
+								<th>:</th>
+								<td><input type="text" placeholder="idlista" v-model="clickedUser.idlista"></td>
+							</tr>
+							<tr>
+								<th>Id Programa</th>
+								<th>:</th>
+								<td><input type="text" placeholder="idprograma" v-model="clickedUser.idprograma"></td>
 							</tr>
 						</table>
 						<div class="margin"></div>
-						<button class="center"  @click="showingeditModal = false; updateUser()">Update User</button>
+						<button class="center" @click="showingeditModal = false; updateUser()">Update User</button>
 					</div>
 				</div>
 			</div>
@@ -119,7 +167,7 @@
 				</div>
 				<div class="modalbody">
 					<div class="modalcontent">
-						
+
 						<div class="margin"></div>
 						<h3 class="center">Are you sure to Delete?</h3>
 						<div class="margin"></div>
@@ -136,7 +184,8 @@
 	</div>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.13/vue.min.js"></script>
 	<script type="text/javascript" src="app.js"></script>
-	
+
 
 </body>
+
 </html>
