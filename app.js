@@ -1,3 +1,4 @@
+
 var app = new Vue({
 
 	el: "#root",
@@ -31,6 +32,7 @@ var app = new Vue({
 	mounted: function () {
 		this.getAllUsers();
 		this.getAllRoles();
+		
 	},
 	methods: {
 		//Trae todos los usuarios de la base de datos
