@@ -53,9 +53,13 @@ var app = new Vue({
 		},
 		getOneUser:function(){
 			//console.log("Al menos entra" )
-			var formData = app.toFormData(app.id)
+			var formData = app.toFormData(app.clickedUser);
 			console.log("Al menos entra +" + formData)
-			axios.post("http://localhost/software/api.php?action=search", formData)
+			axios.get("http://localhost/software/api.php?action=search",{
+				params:{
+					id: app.id
+				}
+			})
 				.then(function (response) {
 					console.log(response.data)
 					app.id=""

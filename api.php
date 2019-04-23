@@ -27,7 +27,7 @@ if($action=='search'){
 
 
 if ($action == 'readusers') {
-	$result = $conn->query("SELECT * FROM `usuarios` where `estado`='activo'");
+	$result = $conn->query("SELECT usuarios.id as id, usuarios.nombre as nombre,usuarios.apellido as apellido, usuarios.correo as correo,usuarios.clave as clave,usuarios.credencial as credencial, lista.nombre as idlista,programa.nombre as idprograma from usuarios,lista,programa where usuarios.idlista=lista.id and usuarios.idprograma=programa.id and usuarios.estado='activo'");
 	$users = array();
 	while ($row = $result->fetch_assoc()){
 		array_push($users, $row);
@@ -58,7 +58,7 @@ if ($action == 'createuser') {
 	$idprograma = $_POST['idprograma'];
 
 
-	$result = $conn->query("INSERT INTO `usuarios` (`id`, `nombre`, `apellido`,`correo`,`clave`,`credencial`,`idlista`,`idprograma`,`estado`) VALUES (	'$id','$nombre', '$apellido','$correo','$clave','$credencial','$idlista','$idprograma', 'activo') ");
+	$result = $conn->query("INSERT INTO `usuarios` (`id`, `nombre`, `apellido`,`correo`,`clave`,`credencial`,`idlista`,`idprograma`,`estado`) VALUES (	'$id','$nombre', '$apellido','$correo','$clave','$credencial',(select id from lista where nombre='$idlista'),(select id from programa where nombre='$idprograma'), 'activo') ");
 	if ($result) {
 		$res['message'] = "Usuario creado correctamente";
 	} else{
@@ -94,9 +94,11 @@ if ($action == 'updateuser') {
 	$idprograma = $_POST['idprograma'];
 
 
-	$result = $conn->query("UPDATE `usuarios` SET `nombre` = '$nombre',`apellido`='$apellido' ,
-	 `correo`='$correo', `credencial` = '$credencial',`idlista` = '$idlista', `idprograma` = '$idprograma', `estado` = 'activo'
-	   WHERE `id` = '$id'");
+	$result = $conn->query("UPDATE usuarios SET nombre = '$nombre',apellido='$apellido' ,
+	correo='$correo', credencial = '$credencial',
+	idlista = (select id from lista where nombre = '$idlista'), idprograma= (select id from programa where nombre =  '$idprograma') ,
+	 estado = 'activo'
+	  WHERE id = '$id'");
 	if ($result) {
 		$res['message'] = "Usuario actualizado correctamente!";
 	} else{
@@ -124,7 +126,7 @@ if ($action == 'deleteuser') {
 	$id = $_POST['id'];
 	$result = $conn->query("UPDATE `usuarios` SET `estado` = 'inactivo' WHERE `id` = '$id'");	
 	if ($result) {
-		$res['message'] = "Usuario ha pasado a inactivo!";
+		$res['message'] = "Usuario ha pasado a inactivo";
 	} else{
 		$res['error'] = true;
 		$res['message'] = "No se ha podido cambiar el estado del usuario";
