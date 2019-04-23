@@ -17,7 +17,7 @@ if (isset($_GET['action'])) {
 
 if($action=='search'){
 	$id = $_GET['id'];
-	$result = $conn->query("SELECT * FROM `usuarios` where `id`='$id'");
+$result = $conn->query("SELECT * FROM `usuarios` where `id`='$id' and `estado`='activo'");
 	$users = array();
 	while ($row = $result->fetch_assoc()){
 		array_push($users, $row);
