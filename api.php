@@ -1,6 +1,6 @@
 <?php 
 
-$conn = new mysqli("localhost", "root", "", "software");
+$conn = new mysqli("localhost", "root", "", "software2");
 if ($conn->connect_error) {
 	die("Database connection established Failed..");
 } 
@@ -9,7 +9,7 @@ $res = array('error' => false);
 
 
 $action = 'readusers';
-$action = 'readroles';
+$action = 'readrol';
 
 if (isset($_GET['action'])) {
 	$action = $_GET['action'];
@@ -25,9 +25,37 @@ $result = $conn->query("SELECT * FROM `usuarios` where `id`='$id' and `estado`='
 	$res['users'] = $users;
 }
 
+if($action=='getFacultad'){
+	$facultad = $_GET['facultad'];
+$result = $conn->query("SELECT * FROM `usuarios` where `idPrograma`=any(select `id` from `programa` where `idFacultad` = any(select  `idFacultad` from `facultad` where `nombre` = '$facultad')  )  and `estado`='activo'");
+	$users = array();
+	while ($row = $result->fetch_assoc()){
+		array_push($users, $row);
+	}
+	$res['users'] = $users;
+}
+if($action=='getPrograma'){
+	$programa = $_GET['programa'];
+$result = $conn->query("SELECT * FROM `usuarios` where `idPrograma`=any(select `id` from `programa` where `nombre` = '$programa' )  and `estado`='activo'");
+	$users = array();
+	while ($row = $result->fetch_assoc()){
+		array_push($users, $row);
+	}
+	$res['users'] = $users;
+}
+
 
 if ($action == 'readusers') {
-	$result = $conn->query("SELECT usuarios.id as id, usuarios.nombre as nombre,usuarios.apellido as apellido, usuarios.correo as correo,usuarios.clave as clave,usuarios.credencial as credencial, lista.nombre as idlista,programa.nombre as idprograma from usuarios,lista,programa where usuarios.idlista=lista.id and usuarios.idprograma=programa.id and usuarios.estado='activo'");
+	$result = $conn->query("INSERT INTO `rol` (`id`, `nombre`, `descripcion`) values('999','Administrador del Sistema', 'Administrador del Sistema')");
+	$result = $conn->query("INSERT INTO `rol` (`id`, `nombre`, `descripcion`) values('998','Personal Administrativo', 'Personal Administrativo')");
+	$result = $conn->query("INSERT INTO `rol` (`id`, `nombre`, `descripcion`) values('997','Decano', 'Decano')");
+	$result = $conn->query("INSERT INTO `rol` (`id`, `nombre`, `descripcion`) values('996','Jefe de Programa', 'Jefe de Programa')");
+	$result = $conn->query("INSERT INTO `rol` (`id`, `nombre`, `descripcion`) values('995','Coordinador de Posgrado', 'Coordinador de Posgrado')");
+	$result = $conn->query("INSERT INTO `rol` (`id`, `nombre`, `descripcion`) values('994',', Coordinador de UOC', ', Coordinador de UOC')");
+	$result = $conn->query("INSERT INTO `rol` (`id`, `nombre`, `descripcion`) values('993','Docente', 'Docente')");
+	$result = $conn->query("INSERT INTO `rol` (`id`, `nombre`, `descripcion`) values('992','Alumno ', 'Alumno ')");
+	$result = $conn->query("INSERT INTO `rol` (`id`, `nombre`, `descripcion`) values('991','Monitor', 'Monitor')");
+	$result = $conn->query("SELECT usuarios.id as id, usuarios.nombre as nombre,usuarios.apellido as apellido, usuarios.correo as correo,usuarios.clave as clave,usuarios.credencial as credencial, lista.nombre as idlista,programa.nombre as idprograma from usuarios,lista,programa where usuarios.codigoLista=lista.id and usuarios.idprograma=programa.id and usuarios.estado='activo'");
 	$users = array();
 	while ($row = $result->fetch_assoc()){
 		array_push($users, $row);
@@ -36,13 +64,13 @@ if ($action == 'readusers') {
 	
 }
 
-if ($action == 'readroles') {
-	$result = $conn->query("SELECT * FROM `roles`");
-	$roles = array();
+if ($action == 'readrol') {
+	$result = $conn->query("SELECT * FROM `rol`");
+	$rol = array();
 	while ($row = $result->fetch_assoc()){
-		array_push($roles, $row);
+		array_push($rol, $row);
 	}
-	$res['roles'] = $roles;
+	$res['rol'] = $rol;
 	
 }
 
@@ -58,7 +86,7 @@ if ($action == 'createuser') {
 	$idprograma = $_POST['idprograma'];
 
 
-	$result = $conn->query("INSERT INTO `usuarios` (`id`, `nombre`, `apellido`,`correo`,`clave`,`credencial`,`idlista`,`idprograma`,`estado`) VALUES (	'$id','$nombre', '$apellido','$correo','$clave','$credencial',(select id from lista where nombre='$idlista'),(select id from programa where nombre='$idprograma'), 'activo') ");
+	$result = $conn->query("INSERT INTO `usuarios` (`id`, `nombre`, `apellido`,`correo`,`clave`,`credencial`,`codigoLista`,`idprograma`,`estado`) VALUES (	'$id','$nombre', '$apellido','$correo','$clave','$credencial',(select id from lista where nombre='$idlista'),(select id from programa where nombre='$idprograma'), 'activo') ");
 	if ($result) {
 		$res['message'] = "Usuario creado correctamente";
 	} else{
@@ -74,7 +102,7 @@ if ($action == 'createrol') {
 	$descripcion = $_POST['descripcion'];
 
 
-	$result = $conn->query("INSERT INTO `roles` (`id`, `nombre`, `descripcion`) VALUES ('$id', '$nombre', '$descripcion')");
+	$result = $conn->query("INSERT INTO `rol` (`id`, `nombre`, `descripcion`) VALUES ('$id', '$nombre', '$descripcion')");
 	if ($result) {
 		$res['message'] = "Rol creado correctamente";
 	} else{
@@ -96,7 +124,7 @@ if ($action == 'updateuser') {
 
 	$result = $conn->query("UPDATE usuarios SET nombre = '$nombre',apellido='$apellido' ,
 	correo='$correo', credencial = '$credencial',
-	idlista = (select id from lista where nombre = '$idlista'), idprograma= (select id from programa where nombre =  '$idprograma') ,
+	codigoLista = (select id from lista where nombre = '$idlista'), idprograma= (select id from programa where nombre =  '$idprograma') ,
 	 estado = 'activo'
 	  WHERE id = '$id'");
 	if ($result) {
@@ -113,7 +141,7 @@ if ($action == 'updaterol') {
 	$descripcion = $_POST['descripcion'];
 
 
-	$result = $conn->query("UPDATE `roles` SET `nombre` = '$nombre',`descripcion`='$descripcion' WHERE `id` = '$id'");
+	$result = $conn->query("UPDATE `rol` SET `nombre` = '$nombre',`descripcion`='$descripcion' WHERE `id` = '$id'");
 	if ($result) {
 		$res['message'] = "Rol actualizado correctamente!";
 	} else{
@@ -135,7 +163,7 @@ if ($action == 'deleteuser') {
 
 if ($action == 'deleterol') {
 	$id = $_POST['id'];
-	$result = $conn->query("DELETE FROM `roles` WHERE `id` = '$id'");	
+	$result = $conn->query("DELETE FROM `rol` WHERE `id` = '$id'");	
 	if ($result) {
 		$res['message'] = "Rol eliminado!";
 	} else{

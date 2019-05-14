@@ -7,7 +7,9 @@
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css">
 	<link rel="stylesheet" href="style.css">
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.17.1/axios.min.js"></script>
+
 	
+
 </head>
 
 <body>
@@ -18,301 +20,311 @@
 		<div class="">
 			<div class="crud_header">
 				<h1 class="left">Primer Sprint</h1>
-				<button class="right addnew" @click="showingModal = true;">Add New</button>
 
 				<div class="fix"></div>
 			</div>
 			<div>
-				<input type="text"  v-model="id">
+				<input type="text" v-model="id">
 				<button @click="getOneUser()">Busqueda</button>
 				<button @click="getAllUsers()">Traer todo</button>
 			</div>
+			<div>
+				<input type="text" v-model="facultad">
+				<button @click="getFacultad()">Filtro facultad</button>
+			</div>
+			<div>
+				<input type="text" v-model="programa">
+				<button @click="getPrograma()">Filtro Pograma</button>
+			</div>
 
-				<h1 class="left">OCMS Gestion de usuarios y roles</h1>
-				<button class="right addnew" @click="showingModal = true;">Agregar usuario</button>
-				<button class="right addnew" @click="showingRolModal = true;">Agregar rol</button>
+			<h1 class="left">OCMS Gestion de usuarios y roles</h1>
+			<button class="right addnew" @click="showingModal = true;">Agregar usuario</button>
+			<button class="right addnew" @click="showingRolModal = true;">Agregar rol</button>
+			<div class="fix"></div>
+		</div>
+		<hr>
+		<!--Notificaciones lista de roles--------------------------------------------------------------->
+		<p class="errorMessage" v-if="errorRolMessage">{{errorRolMessage}}</p>
+		<p class="successMessage" v-if="successRolMessage">{{successRolMessage}}</p>
+		<!--Lista de roles------------------------------------------------------------------------------>
+		<table class="list">
+			<tr>
+				<th>ID</th>
+				<th>Nombre</th>
+				<th>Descripcion</th>
+				<th>Editar</th>
+				<th>Eliminar</th>
+				<th>Privilegios</th>
+			</tr>
+			<tr v-for="rol in roles">
+				<td>{{rol.id}}</td>
+				<td>{{rol.nombre}}</td>
+				<td>{{rol.descripcion}}</td>
+
+				<td><button @click="showingRoleditModal = true; selectRol(rol)">Editar</button></td>
+				<td><button @click="showingRoldeleteModal = true; selectRol(rol)">Eliminar</button></td>
+				<td><button @click="location='../privilegios.html'">Privilegios</button></td>
+			</tr>
+		</table>
+
+		<hr>
+		<!--Notificaciones lista de usuarios--------------------------------------------------------------->
+		<p class="errorMessage" v-if="errorUserMessage">{{errorUserMessage}}</p>
+		<p class="successMessage" v-if="successUserMessage">{{successUserMessage}}</p>
+		<!--Lista de usuarios------------------------------------------------------------------------------>
+		<table class="list" id="simple">
+			<tr>
+				<th>ID</th>
+				<th>Nombre</th>
+				<th>Apellido</th>
+				<th>E-mail</th>
+				<th>Clave</th>
+				<th>Credencial</th>
+				<th>Lista</th>
+				<th>Programa</th>
+				<th>Editar</th>
+				<th>Eliminar</th>
+			</tr>
+			<tr v-for="user in users">
+				<td>{{user.id}}</td>
+				<td>{{user.nombre}}</td>
+				<td>{{user.apellido}}</td>
+				<td>{{user.correo}}</td>
+				<td>{{user.clave}}</td>
+				<td>{{user.credencial}}</td>
+				<td>{{user.idlista}}</td>
+				<td>{{user.idprograma}}</td>
+
+				<td><button @click="showingeditModal = true; selectUser(user)">Editar</button></td>
+				<td><button @click="showingdeleteModal = true; selectUser(user)">Eliminar</button></td>
+			</tr>
+		</table>
+		<div class="fix"></div>
+		<!--Agregar un nuevo usuario-------------------------------------------------------------------------------->
+		<div class="modal col-md-6" id="addmodal" v-if="showingModal">
+			<div class="modalheading">
+				<p class="left">Agregar nuevo usuario</p>
+				<p class="right close" @click="showingModal = false;">x</p>
 				<div class="fix"></div>
 			</div>
-			<hr>
-			<!--Notificaciones lista de roles--------------------------------------------------------------->
-			<p class="errorMessage" v-if="errorRolMessage">{{errorRolMessage}}</p>
-			<p class="successMessage" v-if="successRolMessage">{{successRolMessage}}</p>
-			<!--Lista de roles------------------------------------------------------------------------------>
-			<table class="list">
-				<tr>
-					<th>ID</th>
-					<th>Nombre</th>
-					<th>Descripcion</th>
-					<th>Editar</th>
-					<th>Eliminar</th>
-				</tr>
-				<tr v-for="rol in roles">
-					<td>{{rol.id}}</td>
-					<td>{{rol.nombre}}</td>
-					<td>{{rol.descripcion}}</td>
+			<div class="modalbody">
+				<div class="modalcontent">
+					<table class="form">
+						<tr>
+							<th>Código</th>
+							<th>:</th>
+							<td><input type="number" placeholder="id" v-model="newUser.id"></td>
+						</tr>
+						<tr>
+							<th>Nombre</th>
+							<th>:</th>
+							<td><input type="text" placeholder="Nombre" v-model="newUser.nombre"></td>
+						</tr>
 
-					<td><button @click="showingRoleditModal = true; selectRol(rol)">Editar</button></td>
-					<td><button @click="showingRoldeleteModal = true; selectRol(rol)">Eliminar</button></td>
-				</tr>
-			</table>
-
-			<hr>
-			<!--Notificaciones lista de usuarios--------------------------------------------------------------->
-			<p class="errorMessage" v-if="errorUserMessage">{{errorUserMessage}}</p>
-			<p class="successMessage" v-if="successUserMessage">{{successUserMessage}}</p>
-			<!--Lista de usuarios------------------------------------------------------------------------------>
-			<table class="list">
-				<tr>
-					<th>ID</th>
-					<th>Nombre</th>
-					<th>Apellido</th>
-					<th>E-mail</th>
-					<th>Clave</th>
-					<th>Credencial</th>
-					<th>Lista</th>
-					<th>Programa</th>
-					<th>Editar</th>
-					<th>Eliminar</th>
-				</tr>
-				<tr v-for="user in users">
-					<td>{{user.id}}</td>
-					<td>{{user.nombre}}</td>
-					<td>{{user.apellido}}</td>
-					<td>{{user.correo}}</td>
-					<td>{{user.clave}}</td>
-					<td>{{user.credencial}}</td>
-					<td>{{user.idlista}}</td>
-					<td>{{user.idprograma}}</td>
-
-					<td><button @click="showingeditModal = true; selectUser(user)">Editar</button></td>
-					<td><button @click="showingdeleteModal = true; selectUser(user)">Eliminar</button></td>
-				</tr>
-			</table>
-			<div class="fix"></div>
-			<!--Agregar un nuevo usuario-------------------------------------------------------------------------------->
-			<div class="modal col-md-6" id="addmodal" v-if="showingModal">
-				<div class="modalheading">
-					<p class="left">Agregar nuevo usuario</p>
-					<p class="right close" @click="showingModal = false;">x</p>
-					<div class="fix"></div>
-				</div>
-				<div class="modalbody">
-					<div class="modalcontent">
-						<table class="form">
-							<tr>
-								<th>Código</th>
-								<th>:</th>
-								<td><input type="number" placeholder="id" v-model="newUser.id"></td>
-							</tr>
-							<tr>
-								<th>Nombre</th>
-								<th>:</th>
-								<td><input type="text" placeholder="Nombre" v-model="newUser.nombre"></td>
-							</tr>
-
-							<tr>
-								<th>Apellido</th>
-								<th>:</th>
-								<td><input type="text" placeholder="apellido" v-model="newUser.apellido"></td>
-							</tr>
-							<tr>
-								<th>Correo</th>
-								<th>:</th>
-								<td><input type="email" placeholder="correo" v-model="newUser.correo"></td>
-							</tr>
-							<tr>
-								<th>Clave</th>
-								<th>:</th>
-								<td><input type="text" placeholder="clave" v-model="newUser.clave"></td>
-							</tr>
-							<tr>
-								<th>Credencial</th>
-								<th>:</th>
-								<td><input type="text" placeholder="credencial" v-model="newUser.credencial"></td>
-							</tr>
-							<tr>
-								<th>Lista</th>
-								<th>:</th>
-								<td><input type="text" placeholder="lista" v-model="newUser.idlista"></td>
-							</tr>
-					<tr>
-								<th>Programa</th>
-								<th>:</th>
-								<td><input type="text" placeholder="programa" v-model="newUser.idprograma"></td>
-							</tr>
-						</table>
-						<div class="margin"></div>
-						<button class="center" @click="showingModal = false; saveUser();">ACEPTAR</button>
-						<div class="margin"></div>
-					</div>
+						<tr>
+							<th>Apellido</th>
+							<th>:</th>
+							<td><input type="text" placeholder="apellido" v-model="newUser.apellido"></td>
+						</tr>
+						<tr>
+							<th>Correo</th>
+							<th>:</th>
+							<td><input type="email" placeholder="correo" v-model="newUser.correo"></td>
+						</tr>
+						<tr>
+							<th>Clave</th>
+							<th>:</th>
+							<td><input type="text" placeholder="clave" v-model="newUser.clave"></td>
+						</tr>
+						<tr>
+							<th>Credencial</th>
+							<th>:</th>
+							<td><input type="text" placeholder="credencial" v-model="newUser.credencial"></td>
+						</tr>
+						<tr>
+							<th>Lista</th>
+							<th>:</th>
+							<td><input type="text" placeholder="lista" v-model="newUser.idlista"></td>
+						</tr>
+						<tr>
+							<th>Programa</th>
+							<th>:</th>
+							<td><input type="text" placeholder="programa" v-model="newUser.idprograma"></td>
+						</tr>
+					</table>
+					<div class="margin"></div>
+					<button class="center" @click="showingModal = false; saveUser();">ACEPTAR</button>
+					<div class="margin"></div>
 				</div>
 			</div>
-			<!--Agregar un nuevo rol------------------------------------------------------------------------------>
-			<div class="modal col-md-6" id="addrolmodal" v-if="showingRolModal">
-				<div class="modalheading">
-					<p class="left">Agregar nuevo rol</p>
-					<p class="right close" @click="showingRolModal = false;">x</p>
-					<div class="fix"></div>
-				</div>
-				<div class="modalbody">
-					<div class="modalcontent">
-						<table class="form">
-							<tr>
-								<th>Código</th>
-								<th>:</th>
-								<td><input type="number" placeholder="id" v-model="newRol.id"></td>
-							</tr>
+		</div>
+		<!--Agregar un nuevo rol------------------------------------------------------------------------------>
+		<div class="modal col-md-6" id="addrolmodal" v-if="showingRolModal">
+			<div class="modalheading">
+				<p class="left">Agregar nuevo rol</p>
+				<p class="right close" @click="showingRolModal = false;">x</p>
+				<div class="fix"></div>
+			</div>
+			<div class="modalbody">
+				<div class="modalcontent">
+					<table class="form">
+						<tr>
+							<th>Código</th>
+							<th>:</th>
+							<td><input type="number" placeholder="id" v-model="newRol.id"></td>
+						</tr>
 
-							<tr>
-								<th>Nombre</th>
-								<th>:</th>
-								<td><input type="text" placeholder="Nombre" v-model="newRol.nombre"></td>
-							</tr>
+						<tr>
+							<th>Nombre</th>
+							<th>:</th>
+							<td><input type="text" placeholder="Nombre" v-model="newRol.nombre"></td>
+						</tr>
 
-							<tr>
-								<th>Descripción</th>
-								<th>:</th>
-								<td><input type="text" placeholder="descripcion" v-model="newRol.descripcion"></td>
-							</tr>
-						</table>
-						<div class="margin"></div>
-						<button class="center" @click="showingRolModal = false; saveRol();">ACEPTAR</button>
-						<div class="margin"></div>
-					</div>
+						<tr>
+							<th>Descripción</th>
+							<th>:</th>
+							<td><input type="text" placeholder="descripcion" v-model="newRol.descripcion"></td>
+						</tr>
+					</table>
+					<div class="margin"></div>
+					<button class="center" @click="showingRolModal = false; saveRol();">ACEPTAR</button>
+					<div class="margin"></div>
 				</div>
 			</div>
-			<!--Editar un usuario------------------------------------------------------------------------------>
-			<div class="modal col-md-6" id="editmodal" v-if="showingeditModal">
-				<div class="modalheading">
-					<p class="left">Editar usuario</p>
-					<p class="right close" @click="showingeditModal = false;">x</p>
-					<div class="fix"></div>
-				</div>
-				<div class="modalbody">
-					<div class="modalcontent">
-						<table class="form">
-							<tr>
-								<th>Nombre</th>
-								<th>:</th>
-								<td><input type="text" placeholder="nombre" v-model="clickedUser.nombre"></td>
-							</tr>
-							<tr>
-								<th>Apellido</th>
-								<th>:</th>
-								<td><input type="text" placeholder="apellido" v-model="clickedUser.apellido"></td>
-							</tr>
-							<tr>
-								<th>Correo</th>
-								<th>:</th>
-								<td><input type="email" placeholder="correo" v-model="clickedUser.correo"></td>
-							</tr>
-							<tr>
-								<th>Clave</th>
-								<th>:</th>
-								<td><input type="text" placeholder="clave" v-model="clickedUser.clave"></td>
-							</tr>
-							<tr>
-								<th>Credencial</th>
-								<th>:</th>
-								<td><input type="text" placeholder="credencial" v-model="clickedUser.credencial"></td>
-							</tr>
-							<tr>
-								<th>Lista</th>
-								<th>:</th>
-								<td><input type="text" placeholder="lista" v-model="clickedUser.idlista"></td>
-							</tr>
-							<tr>
-								<th>Programa</th>
-								<th>:</th>
-								<td><input type="text" placeholder="programa" v-model="clickedUser.idprograma"></td>
-							</tr>
-						</table>
-						<div class="margin"></div>
-						<button class="center" @click="showingeditModal = false; updateUser()">ACEPTAR</button>
-						<div class="margin"></div>
-					</div>
+		</div>
+		<!--Editar un usuario------------------------------------------------------------------------------>
+		<div class="modal col-md-6" id="editmodal" v-if="showingeditModal">
+			<div class="modalheading">
+				<p class="left">Editar usuario</p>
+				<p class="right close" @click="showingeditModal = false;">x</p>
+				<div class="fix"></div>
+			</div>
+			<div class="modalbody">
+				<div class="modalcontent">
+					<table class="form">
+						<tr>
+							<th>Nombre</th>
+							<th>:</th>
+							<td><input type="text" placeholder="nombre" v-model="clickedUser.nombre"></td>
+						</tr>
+						<tr>
+							<th>Apellido</th>
+							<th>:</th>
+							<td><input type="text" placeholder="apellido" v-model="clickedUser.apellido"></td>
+						</tr>
+						<tr>
+							<th>Correo</th>
+							<th>:</th>
+							<td><input type="email" placeholder="correo" v-model="clickedUser.correo"></td>
+						</tr>
+						<tr>
+							<th>Clave</th>
+							<th>:</th>
+							<td><input type="text" placeholder="clave" v-model="clickedUser.clave"></td>
+						</tr>
+						<tr>
+							<th>Credencial</th>
+							<th>:</th>
+							<td><input type="text" placeholder="credencial" v-model="clickedUser.credencial"></td>
+						</tr>
+						<tr>
+							<th>Lista</th>
+							<th>:</th>
+							<td><input type="text" placeholder="lista" v-model="clickedUser.idlista"></td>
+						</tr>
+						<tr>
+							<th>Programa</th>
+							<th>:</th>
+							<td><input type="text" placeholder="programa" v-model="clickedUser.idprograma"></td>
+						</tr>
+					</table>
+					<div class="margin"></div>
+					<button class="center" @click="showingeditModal = false; updateUser()">ACEPTAR</button>
+					<div class="margin"></div>
 				</div>
 			</div>
-			<!--Editar un Rol------------------------------------------------------------------------------>
-			<div class="modal col-md-6" id="editRolmodal" v-if="showingRoleditModal">
-				<div class="modalheading">
-					<p class="left">Editar rol</p>
-					<p class="right close" @click="showingRoleditModal = false;">x</p>
-					<div class="fix"></div>
-				</div>
-				<div class="modalbody">
-					<div class="modalcontent">
-						<table class="form">
-							<tr>
-								<th>Nombre</th>
-								<th>:</th>
-								<td><input type="text" placeholder="nombre" v-model="clickedRol.nombre"></td>
-							</tr>
-							<tr>
-								<th>Descripción</th>
-								<th>:</th>
-								<td><input type="text" placeholder="descripcion" v-model="clickedRol.descripcion"></td>
-							</tr>
-						</table>
-						<div class="margin"></div>
-						<button class="center" @click="showingRoleditModal = false; updateRol()">ACEPTAR</button>
-						<div class="margin"></div>
-					</div>
+		</div>
+		<!--Editar un Rol------------------------------------------------------------------------------>
+		<div class="modal col-md-6" id="editRolmodal" v-if="showingRoleditModal">
+			<div class="modalheading">
+				<p class="left">Editar rol</p>
+				<p class="right close" @click="showingRoleditModal = false;">x</p>
+				<div class="fix"></div>
+			</div>
+			<div class="modalbody">
+				<div class="modalcontent">
+					<table class="form">
+						<tr>
+							<th>Nombre</th>
+							<th>:</th>
+							<td><input type="text" placeholder="nombre" v-model="clickedRol.nombre"></td>
+						</tr>
+						<tr>
+							<th>Descripción</th>
+							<th>:</th>
+							<td><input type="text" placeholder="descripcion" v-model="clickedRol.descripcion"></td>
+						</tr>
+					</table>
+					<div class="margin"></div>
+					<button class="center" @click="showingRoleditModal = false; updateRol()">ACEPTAR</button>
+					<div class="margin"></div>
 				</div>
 			</div>
-			<!--Eliminar un usuario------------------------------------------------------------------------------>
-			<div class="modal col-md-6" id="deletemodal" v-if="showingdeleteModal">
-				<div class="modalheading">
-					<p class="left">Eliminar usuario</p>
-					<p class="right close" @click="showingdeleteModal = false;">x</p>
-					<div class="fix"></div>
-				</div>
-				<div class="modalbody">
-					<div class="modalcontent">
+		</div>
+		<!--Eliminar un usuario------------------------------------------------------------------------------>
+		<div class="modal col-md-6" id="deletemodal" v-if="showingdeleteModal">
+			<div class="modalheading">
+				<p class="left">Eliminar usuario</p>
+				<p class="right close" @click="showingdeleteModal = false;">x</p>
+				<div class="fix"></div>
+			</div>
+			<div class="modalbody">
+				<div class="modalcontent">
 
-						<div class="margin"></div>
-						<h3 class="center">¿Desea cambiar a inactivo?</h3>
-						<div class="margin"></div>
-						<h4 class="center">{{clickedUser.username}}</h4>
-						<div class="margin"></div>
-						<div class="col-md-6 center">
-							<button class="left" @click="showingdeleteModal = false; deleteUser()">SI</button>
-							<button class="right" @click="showingdeleteModal = false;">NO</button>
-						</div>
-						<br><br>
-						<div class="margin"></div>
+					<div class="margin"></div>
+					<h3 class="center">¿Desea cambiar a inactivo?</h3>
+					<div class="margin"></div>
+					<h4 class="center">{{clickedUser.username}}</h4>
+					<div class="margin"></div>
+					<div class="col-md-6 center">
+						<button class="left" @click="showingdeleteModal = false; deleteUser()">SI</button>
+						<button class="right" @click="showingdeleteModal = false;">NO</button>
 					</div>
+					<br><br>
+					<div class="margin"></div>
 				</div>
 			</div>
-			<!--Eliminar un Rol------------------------------------------------------------------------------>
-			<div class="modal col-md-6" id="deleteRolmodal" v-if="showingRoldeleteModal">
-				<div class="modalheading">
-					<p class="left">Eliminar Rol</p>
-					<p class="right close" @click="showingRoldeleteModal = false;">x</p>
-					<div class="fix"></div>
-				</div>
-				<div class="modalbody">
-					<div class="modalcontent">
+		</div>
+		<!--Eliminar un Rol------------------------------------------------------------------------------>
+		<div class="modal col-md-6" id="deleteRolmodal" v-if="showingRoldeleteModal">
+			<div class="modalheading">
+				<p class="left">Eliminar Rol</p>
+				<p class="right close" @click="showingRoldeleteModal = false;">x</p>
+				<div class="fix"></div>
+			</div>
+			<div class="modalbody">
+				<div class="modalcontent">
 
-						<div class="margin"></div>
-						<h3 class="center">¿Está seguro que desea eliminar este rol?, 
-							Este rol se eliminará de todos los usuarios que lo contengan</h3>
-						<div class="margin"></div>
-						<h4 class="center">{{clickedRol.nombre}}</h4>
-						<div class="margin"></div>
-						<div class="col-md-6 center">
-							<button class="left" @click="showingRoldeleteModal = false; deleteRol()">SI</button>
-							<button class="right" @click="showingRoldeleteModal = false;">NO</button>
-						</div>
-						<br><br>
-						<div class="margin"></div>
+					<div class="margin"></div>
+					<h3 class="center">¿Está seguro que desea eliminar este rol?,
+						Este rol se eliminará de todos los usuarios que lo contengan</h3>
+					<div class="margin"></div>
+					<h4 class="center">{{clickedRol.nombre}}</h4>
+					<div class="margin"></div>
+					<div class="col-md-6 center">
+						<button class="left" @click="showingRoldeleteModal = false; deleteRol()">SI</button>
+						<button class="right" @click="showingRoldeleteModal = false;">NO</button>
 					</div>
+					<br><br>
+					<div class="margin"></div>
 				</div>
 			</div>
 		</div>
 	</div>
+	</div>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.13/vue.min.js"></script>
 	<script type="text/javascript" src="app.js"></script>
+	
 
 
 </body>

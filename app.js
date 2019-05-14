@@ -22,6 +22,8 @@ var app = new Vue({
 		newUser: { id: "", nombre: "", apellido: "", correo: "", clave: "", credencial: "", idlista: "", idprograma: "" },
 		clickedUser: {},
 		id:"",
+		facultad:"",
+		programa:"",
 
 		roles: [],
 		newRol: {id: "", nombre: "", descripcion: ""},
@@ -38,7 +40,7 @@ var app = new Vue({
 		//Trae todos los usuarios de la base de datos
 		getAllUsers: function () {
 			
-			axios.get("http://localhost/software/api.php?action=readusers")
+			axios.get("http://localhost/software2/api.php?action=readusers")
 				.then(function (response) {
 					console.log(response.data)
 					if (response.data.error) {
@@ -54,10 +56,9 @@ var app = new Vue({
 				});
 		},
 		getOneUser:function(){
-			//console.log("Al menos entra" )
 			var formData = app.toFormData(app.clickedUser);
 			console.log("Al menos entra +" + formData)
-			axios.get("http://localhost/software/api.php?action=search",{
+			axios.get("http://localhost/software2/api.php?action=search",{
 				params:{
 					id: app.id
 				}
@@ -67,36 +68,83 @@ var app = new Vue({
 					app.id=""
 					if (response.data.error) {
 						app.errorMessage = response.data.message;
-						console.log("error")
+						//console.log("error")
 					} else {
 						app.users = response.data.users;
-						console.log("Entro")
+						//console.log("Entro")
 					}
 				});
+				
+
+		},
+		getFacultad:function(){
+			var formData = app.toFormData(app.clickedUser);
+			console.log("Al menos entra +" + formData)
+			axios.get("http://localhost/software2/api.php?action=getFacultad",{
+				params:{
+					facultad: app.facultad
+				}
+			})
+				.then(function (response) {
+					console.log(response.data)
+					app.facultad=""
+					if (response.data.error) {
+						app.errorMessage = response.data.message;
+						//console.log("error")
+					} else {
+						app.users = response.data.users;
+						//console.log("Entro")
+					}
+				});
+				
+
+		},
+		getPrograma:function(){
+			var formData = app.toFormData(app.clickedUser);
+			console.log("Al menos entra +" + formData)
+			axios.get("http://localhost/software2/api.php?action=getPrograma",{
+				params:{
+					programa: app.programa
+				}
+			})
+				.then(function (response) {
+					console.log(response.data)
+					app.programa=""
+					if (response.data.error) {
+						app.errorMessage = response.data.message;
+						//console.log("error")
+					} else {
+						app.users = response.data.users;
+						//console.log("Entro")
+					}
+				});
+				
+
 		},
 		//Trae todos los roles de la base de datos
 		getAllRoles: function () {
 			
-			axios.get("http://localhost/software/api.php?action=readroles")
+			axios.get("http://localhost/software2/api.php?action=readrol")
 				.then(function (response) {
 					console.log(response.data)
 					if (response.data.error) {
 						app.errorRolMessage = response.data.message;
 						console.log(app.roles)
 					} else {
-						app.roles = response.data.roles;
-						console.log(app.roles)
+						app.roles = response.data.rol;
+						console.log( response.data.rol)
 					}
 					//
-					
+					console.log(app.roles )
 					
 				});
+				
 		},
 		//Crea un nuevo usuario en la tabla usuarios
 		saveUser: function () {
  
 			var formData = app.toFormData(app.newUser);
-			axios.post("http://localhost/software/api.php?action=createuser", formData)
+			axios.post("http://localhost/software2/api.php?action=createuser", formData)
 				.then(function (response) {
 					console.log(response);
 					app.newUser = { id: "", nombre: "", apellido: "", correo: "", clave: "", credencial: "", idlista: "", idprograma: "" };
@@ -115,7 +163,7 @@ var app = new Vue({
 		saveRol: function () {
 
 			var formData = app.toFormData(app.newRol);
-			axios.post("http://localhost/software/api.php?action=createrol", formData)
+			axios.post("http://localhost/software2/api.php?action=createrol", formData)
 				.then(function (response) {
 					console.log(response);
 					app.newRol = { id: "", nombre: "", descripcion: ""};
@@ -134,7 +182,7 @@ var app = new Vue({
 		updateUser: function () {
 
 			var formData = app.toFormData(app.clickedUser);
-			axios.post("http://localhost/software/api.php?action=updateuser", formData)
+			axios.post("http://localhost/software2/api.php?action=updateuser", formData)
 				.then(function (response) {
 					console.log(response);
 					app.clickedUser = {};
@@ -150,7 +198,7 @@ var app = new Vue({
 		updateRol: function () {
 
 			var formData = app.toFormData(app.clickedRol);
-			axios.post("http://localhost/software/api.php?action=updaterol", formData)
+			axios.post("http://localhost/software2/api.php?action=updaterol", formData)
 				.then(function (response) {
 					console.log(response);
 					app.clickedRol = {};
@@ -166,7 +214,7 @@ var app = new Vue({
 		deleteUser: function () {
 
 			var formData = app.toFormData(app.clickedUser);
-			axios.post("http://localhost/software/api.php?action=deleteuser", formData)
+			axios.post("http://localhost/software2/api.php?action=deleteuser", formData)
 				.then(function (response) {
 					console.log(response);
 					app.clickedUser = {};
@@ -182,7 +230,7 @@ var app = new Vue({
 		deleteRol: function () {
 
 			var formData = app.toFormData(app.clickedRol);
-			axios.post("http://localhost/software/api.php?action=deleterol", formData)
+			axios.post("http://localhost/software2/api.php?action=deleterol", formData)
 				.then(function (response) {
 					console.log(response);
 					app.clickedRol = {};
