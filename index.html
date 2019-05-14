@@ -8,7 +8,7 @@
 	<link rel="stylesheet" href="style.css">
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.17.1/axios.min.js"></script>
 
-	
+
 
 </head>
 
@@ -30,7 +30,7 @@
 			</div>
 			<div>
 				<input type="text" v-model="facultad">
-				<button @click="getFacultad()">Filtro facultad</button>
+				<button @click="getFacultad();getProgramasFacultad()">Filtro facultad</button>
 			</div>
 			<div>
 				<input type="text" v-model="programa">
@@ -43,10 +43,40 @@
 			<div class="fix"></div>
 		</div>
 		<hr>
-		<!--Notificaciones lista de roles--------------------------------------------------------------->
-		<p class="errorMessage" v-if="errorRolMessage">{{errorRolMessage}}</p>
-		<p class="successMessage" v-if="successRolMessage">{{successRolMessage}}</p>
+
+			<!--Notificaciones lista de programas--------------------------------------------------------------->
+			<p class="errorMessage" v-if="errorProgramaMessage">{{errorProgramaMessage}}</p>
+			<p class="successMessage" v-if="successProgramaMessage">{{successProgramaMessage}}</p>
+			<!--Notificaciones lista de roles--------------------------------------------------------------->
+			<p class="errorMessage" v-if="errorRolMessage">{{errorRolMessage}}</p>
+			<p class="successMessage" v-if="successRolMessage">{{successRolMessage}}</p>
+			<!--Notificaciones lista de usuarios--------------------------------------------------------------->
+			<p class="errorMessage" v-if="errorUserMessage">{{errorUserMessage}}</p>
+			<p class="successMessage" v-if="successUserMessage">{{successUserMessage}}</p>
+
+		<table class="list">
+			<tr>
+				<th>ID</th>
+				<th>Nombre</th>
+				<th>Facultad</th>
+				<th>Editar</th>
+				<th>Eliminar</th>
+			</tr>
+			<tr v-for="programa in programas">
+				<td>{{programa.id}}</td>
+				<td>{{programa.nombre}}</td>
+				<td>{{programa.facultad}}</td>
+
+				<td><button @click="showingRoleditModal = true; selectPrograma(programa)">Editar</button></td>
+				<td><button @click="showingRoldeleteModal = true; selectPrograma(programa)">Eliminar</button></td>
+
+			</tr>
+		</table>
+
+		<hr>
+	
 		<!--Lista de roles------------------------------------------------------------------------------>
+
 		<table class="list">
 			<tr>
 				<th>ID</th>
@@ -68,9 +98,7 @@
 		</table>
 
 		<hr>
-		<!--Notificaciones lista de usuarios--------------------------------------------------------------->
-		<p class="errorMessage" v-if="errorUserMessage">{{errorUserMessage}}</p>
-		<p class="successMessage" v-if="successUserMessage">{{successUserMessage}}</p>
+
 		<!--Lista de usuarios------------------------------------------------------------------------------>
 		<table class="list" id="simple">
 			<tr>
@@ -192,6 +220,39 @@
 				</div>
 			</div>
 		</div>
+		<div class="modal col-md-6" id="addprogramamodal" v-if="showingProgramaModal">
+				<div class="modalheading">
+					<p class="left">Agregar nuevo programa</p>
+					<p class="right close" @click="showingProgramaModal = false;">x</p>
+					<div class="fix"></div>
+				</div>
+				<div class="modalbody">
+					<div class="modalcontent">
+						<table class="form">
+							<tr>
+								<th>Código</th>
+								<th>:</th>
+								<td><input type="number" placeholder="id" v-model="newPrograma.id"></td>
+							</tr>
+	
+							<tr>
+								<th>Nombre</th>
+								<th>:</th>
+								<td><input type="text" placeholder="Nombre" v-model="newPrograma.nombre"></td>
+							</tr>
+	
+							<tr>
+								<th>Descripción</th>
+								<th>:</th>
+								<td><input type="text" placeholder="facultad" v-model="newPrograma.newFacultad"></td>
+							</tr>
+						</table>
+						<div class="margin"></div>
+						<button class="center" @click="showingProgramaModal = false; savePrograma();">ACEPTAR</button>
+						<div class="margin"></div>
+					</div>
+				</div>
+			</div>
 		<!--Editar un usuario------------------------------------------------------------------------------>
 		<div class="modal col-md-6" id="editmodal" v-if="showingeditModal">
 			<div class="modalheading">
@@ -271,6 +332,33 @@
 				</div>
 			</div>
 		</div>
+		<!--Editar un programa------------------------------------------------------------------------------>
+		<div class="modal col-md-6" id="editProgramalmodal" v-if="showingProgramaeditModal">
+				<div class="modalheading">
+					<p class="left">Editar rol</p>
+					<p class="right close" @click="showingProgramaeditModal = false;">x</p>
+					<div class="fix"></div>
+				</div>
+				<div class="modalbody">
+					<div class="modalcontent">
+						<table class="form">
+							<tr>
+								<th>Nombre</th>
+								<th>:</th>
+								<td><input type="text" placeholder="nombre" v-model="clickedPrograma.nombre"></td>
+							</tr>
+							<tr>
+								<th>Descripción</th>
+								<th>:</th>
+								<td><input type="text" placeholder="descripcion" v-model="clickedPrograma.facultad"></td>
+							</tr>
+						</table>
+						<div class="margin"></div>
+						<button class="center" @click="showingProgramaeditModal = false; updatePrograma()">ACEPTAR</button>
+						<div class="margin"></div>
+					</div>
+				</div>
+			</div>
 		<!--Eliminar un usuario------------------------------------------------------------------------------>
 		<div class="modal col-md-6" id="deletemodal" v-if="showingdeleteModal">
 			<div class="modalheading">
@@ -320,11 +408,36 @@
 				</div>
 			</div>
 		</div>
+		<!--Eliminar un programa------------------------------------------------------------------------------>
+		<div class="modal col-md-6" id="deleteProgramamodal" v-if="showingProgramadeleteModal">
+				<div class="modalheading">
+					<p class="left">Eliminar Rol</p>
+					<p class="right close" @click="showingProgramadeleteModal = false;">x</p>
+					<div class="fix"></div>
+				</div>
+				<div class="modalbody">
+					<div class="modalcontent">
+	
+						<div class="margin"></div>
+						<h3 class="center">¿Está seguro que desea eliminar este programa?,
+							Este programa se eliminará con todos los usuarios que lo contengan</h3>
+						<div class="margin"></div>
+						<h4 class="center">{{clickedPrograma.nombre}}</h4>
+						<div class="margin"></div>
+						<div class="col-md-6 center">
+							<button class="left" @click="showingProgramadeleteModal = false; deletePrograma()">SI</button>
+							<button class="right" @click="showingProgramadeleteModal = false;">NO</button>
+						</div>
+						<br><br>
+						<div class="margin"></div>
+					</div>
+				</div>
+			</div>
 	</div>
 	</div>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.13/vue.min.js"></script>
 	<script type="text/javascript" src="app.js"></script>
-	
+
 
 
 </body>

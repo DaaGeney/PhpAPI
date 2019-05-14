@@ -25,6 +25,16 @@ $result = $conn->query("SELECT * FROM `usuarios` where `id`='$id' and `estado`='
 	$res['users'] = $users;
 }
 
+if($action=='getProgramasFacultad'){
+	$facultad = $_GET['facultad'];
+$result = $conn->query("SELECT `programa`.`id` as id,`programa`.`nombre` as nombre,`facultad`.`nombre` as facultad FROM `programa`,`facultad` WHERE `programa`.`idFacultad`= `facultad`.`idFacultad` and `facultad`.`nombre`='$facultad'");
+	$users = array();
+	while ($row = $result->fetch_assoc()){
+		array_push($users, $row);
+	}
+	$res['users'] = $users;
+}
+
 if($action=='getFacultad'){
 	$facultad = $_GET['facultad'];
 $result = $conn->query("SELECT * FROM `usuarios` where `idPrograma`=any(select `id` from `programa` where `idFacultad` = any(select  `idFacultad` from `facultad` where `nombre` = '$facultad')  )  and `estado`='activo'");
