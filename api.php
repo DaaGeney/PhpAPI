@@ -39,6 +39,26 @@ FROM `programa`,`facultad` WHERE `programa`.`idFacultad`= `facultad`.`idFacultad
 	}
 	$res['users'] = $users;
 }
+if($action=='saveProgramaFacultad'){
+	$id = $_POST['id'];
+	$nombre = $_POST['nombre'];
+	$facultad = $_POST['facultad'];
+	$snies = $_POST['snies'];
+	$duracion = $_POST['duracion'];
+	$modalidad = $_POST['modalidad'];
+	$reacreditacion = $_POST['reacreditacion'];
+	$icfes = $_POST['icfes'];
+	$renovacion = $_POST['renovacion'];
+	$tipo = $_POST['tipo'];
+
+$result = $conn->query("  insert into `programa` (`id`,`codigoSnies`,`duracion`,`idFacultad`,`modalidad`,`nombre`,`reacrediracion`,`registroIcfes`,`renovacionRegistro`,`tipo` )  value ('$id','$snies','$duracion',(select `idFacultad` from `facultad` where `nombre` ='$facultad'),'$modalidad','$nombre','$reacreditacion','$icfes','$renovacion','$tipo')");
+	if ($result) {
+		$res['message'] = "Programa actualizado correctamente!";
+	} else{
+		$res['error'] = true;
+		$res['message'] = "No se ha podido actualizar el programa";
+	}
+}
 
 if($action=='updateProgramasFacultad'){
 	$id = $_POST['id'];
@@ -198,6 +218,17 @@ if ($action == 'deleteuser') {
 	} else{
 		$res['error'] = true;
 		$res['message'] = "No se ha podido cambiar el estado del usuario";
+	}
+}
+
+if ($action == 'deletePrograma') {
+	$id = $_POST['id'];
+	$result = $conn->query("DELETE FROM `programa` WHERE `id` = '$id'");	
+	if ($result) {
+		$res['message'] = "Programa eliminado";
+	} else{
+		$res['error'] = true;
+		$res['message'] = "No se ha podido eliminar";
 	}
 }
 

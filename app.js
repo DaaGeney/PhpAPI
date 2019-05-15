@@ -210,6 +210,25 @@ var app = new Vue({
 					}
 				});
 		},
+		//Crea un nuevo rol en la tabla roles
+		savePrograma: function () {
+
+			var formData = app.toFormData(app.newPrograma);
+			axios.post("http://localhost/Software/api.php?action=saveProgramaFacultad", formData)
+				.then(function (response) {
+					console.log(response);
+					app.newRol = { id: "", nombre: "", descripcion: "" };
+					console.log(app.newRol)
+					if (response.data.error) {
+						app.errorprogramaMessage = response.data.message;
+						//console.log(response.data.message)
+					} else {
+						console.log("entro melo")
+						app.successProgramaMessage = response.data.message;
+						app.getAllRoles();
+					}
+				});
+		},
 		//Actualiza un usuario dependiendo del id de este
 		updateUser: function () {
 
@@ -270,6 +289,22 @@ var app = new Vue({
 					} else {
 						app.successUserMessage = response.data.message;
 						app.getAllUsers();
+					}
+				});
+		},
+		//Elimina un programa dependiendo del id de este
+		deletePrograma: function () {
+
+			var formData = app.toFormData(app.clickedPrograma);
+			axios.post("http://localhost/Software/api.php?action=deletePrograma", formData)
+				.then(function (response) {
+					console.log(response);
+					app.clickedPrograma = {};
+					if (response.data.error) {
+						app.errorUserMessage = response.data.message;
+					} else {
+						app.successProgramaMessage = response.data.message;
+
 					}
 				});
 		},
