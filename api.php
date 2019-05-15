@@ -27,12 +27,42 @@ $result = $conn->query("SELECT * FROM `usuarios` where `id`='$id' and `estado`='
 
 if($action=='getProgramasFacultad'){
 	$facultad = $_GET['facultad'];
-$result = $conn->query("SELECT `programa`.`id` as id,`programa`.`nombre` as nombre,`facultad`.`nombre` as facultad FROM `programa`,`facultad` WHERE `programa`.`idFacultad`= `facultad`.`idFacultad` and `facultad`.`nombre`='$facultad'");
+$result = $conn->query("SELECT `programa`.`id` as id,
+`programa`.`nombre` as nombre,
+`facultad`.`nombre` as facultad, `programa`.`codigoSnies` as snies, `programa`.`duracion` as duracion,  
+`programa`.`modalidad` as modalidad, `programa`.`reacrediracion` as reacreditacion, `programa`.`registroIcfes` as icfes,`programa`.`renovacionRegistro` as renovacion, 
+`programa`.`tipo` as tipo 
+FROM `programa`,`facultad` WHERE `programa`.`idFacultad`= `facultad`.`idFacultad` and `facultad`.`nombre`='$facultad'");
 	$users = array();
 	while ($row = $result->fetch_assoc()){
 		array_push($users, $row);
 	}
 	$res['users'] = $users;
+}
+
+if($action=='updateProgramasFacultad'){
+	$id = $_POST['id'];
+	$nombre = $_POST['nombre'];
+	$facultad = $_POST['facultad'];
+	$snies = $_POST['snies'];
+	$duracion = $_POST['duracion'];
+	$modalidad = $_POST['modalidad'];
+	$reacreditacion = $_POST['reacreditacion'];
+	$icfes = $_POST['icfes'];
+	$renovacion = $_POST['renovacion'];
+	$tipo = $_POST['tipo'];
+
+$result = $conn->query("UPDATE `programa` SET `codigoSnies` = '$snies',`duracion`='$duracion' ,
+`idFacultad` = (select `idFacultad` from `facultad` where `nombre` = '$facultad'),
+`modalidad`='$modalidad', `nombre` = '$nombre',
+`reacrediracion` = '$reacreditacion', `registroIcfes`= '$icfes' , `renovacionRegistro` = '$renovacion', `tipo` = '$tipo'
+  WHERE `id` = '$id'");
+	if ($result) {
+		$res['message'] = "Programa actualizado correctamente!";
+	} else{
+		$res['error'] = true;
+		$res['message'] = "No se ha podido actualizar el programa";
+	}
 }
 
 if($action=='getFacultad'){

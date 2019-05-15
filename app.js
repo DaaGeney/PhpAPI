@@ -33,8 +33,9 @@ var app = new Vue({
 		roles: [],
 		newRol: { id: "", nombre: "", descripcion: "" },
 		clickedRol: {},
+
 		programas: [],
-		newPrograma: { id: "", nombre: "", facultad: "" },
+		newPrograma: { id: "", nombre: "", facultad: "",snies:"",duracion:"",modalidad:"",reacreditacion:"",icfes:"",renovacion:"",tipo:"" },
 		clickedPrograma: {},
 
 	},
@@ -226,6 +227,21 @@ var app = new Vue({
 				});
 		},
 		//Actualiza un rol dependiendo del id de este
+		updatePrograma: function () {
+
+			var formData = app.toFormData(app.clickedPrograma);
+			axios.post("http://localhost/Software/api.php?action=updateProgramasFacultad", formData)
+				.then(function (response) {
+					console.log(response);
+					app.clickedPrograma = {};
+					if (response.data.error) {
+						app.errorProgramaMessage = response.data.message;
+					} else {
+						app.successProgramaMessage = response.data.message;
+					}
+				});
+		},
+		//Actualiza un programa dependiendo del id de este
 		updateRol: function () {
 
 			var formData = app.toFormData(app.clickedRol);
@@ -281,6 +297,9 @@ var app = new Vue({
 		selectRol(rol) {
 			app.clickedRol = rol;
 		},
+		selectPrograma(programa) {
+			app.clickedPrograma = programa;
+		},
 		//Traduce los datos a la tabla
 		toFormData: function (obj) {
 			var form_data = new FormData();
@@ -295,6 +314,8 @@ var app = new Vue({
 			app.successUserMessage = "";
 			app.errorRolMessage = "";
 			app.successRolMessage = "";
+			app.errorProgramaMessage = "";
+			app.successProgramaMessage = "";
 		},
 	}
 });
